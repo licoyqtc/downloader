@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ubbey/ubox.downloader"
 	"github.com/ubbey/ubox.downloader/model"
+	"time"
 )
 
 type ss struct {
@@ -63,4 +64,6 @@ func main() {
 	if err != nil {
 		fmt.Println("new task fail : ", err.Error())
 	}
+
+	time.Sleep(time.Second * 10)
 }
