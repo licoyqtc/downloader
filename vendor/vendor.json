@@ -1,0 +1,108 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "j8QgwNHJYYuHYIja7agSHY6Trtw=",
+			"origin": "ubox.ubcloud/vendor/github.com/labstack/echo",
+			"path": "github.com/labstack/echo",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "R6DzcBLEP0BONPpsyr+11N7xh5w=",
+			"origin": "ubox.ubcloud/vendor/github.com/labstack/gommon/color",
+			"path": "github.com/labstack/gommon/color",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "uHA6zbtxzJce4r+6uk8zu11qkuk=",
+			"origin": "ubox.ubcloud/vendor/github.com/labstack/gommon/log",
+			"path": "github.com/labstack/gommon/log",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "qNkx9+OTwZI6aFv7K9zuFCGODUw=",
+			"origin": "ubox.ubcloud/vendor/github.com/mattn/go-colorable",
+			"path": "github.com/mattn/go-colorable",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "U6lX43KDDlNOn+Z0Yyww+ZzHfFo=",
+			"origin": "ubox.ubcloud/vendor/github.com/mattn/go-isatty",
+			"path": "github.com/mattn/go-isatty",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "UXD6iorzeLXDBmLaOGYsAJ/Ls3w=",
+			"path": "github.com/mattn/go-sqlite3",
+			"revision": "d896508f87298565da02ed92730e7065c3de10b8",
+			"revisionTime": "2018-04-04T14:27:34Z"
+		},
+		{
+			"checksumSHA1": "QPhx1UvvaCMfP3E+ilQJ7zTT4KE=",
+			"path": "github.com/ubbey/ubox.downloader",
+			"revision": "4cd25cdba32d319481ee703aa5c7400d0002a4c5",
+			"revisionTime": "2019-01-17T11:08:46Z"
+		},
+		{
+			"checksumSHA1": "M0cb4Hkn8alopTl1F11iNvAHK4A=",
+			"path": "github.com/ubbey/ubox.downloader/model",
+			"revision": "4cd25cdba32d319481ee703aa5c7400d0002a4c5",
+			"revisionTime": "2019-01-17T11:08:46Z"
+		},
+		{
+			"checksumSHA1": "LTOa3BADhwvT0wFCknPueQALm8I=",
+			"origin": "ubox.ubcloud/vendor/github.com/valyala/bytebufferpool",
+			"path": "github.com/valyala/bytebufferpool",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "gtG8jeB0fcTmKZf+6Vbcoa6nfec=",
+			"origin": "ubox.ubcloud/vendor/github.com/valyala/fasttemplate",
+			"path": "github.com/valyala/fasttemplate",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "W0j4I7QpxXlChjyhAojZmFjU6Bg=",
+			"origin": "ubox.ubcloud/vendor/golang.org/x/crypto/acme",
+			"path": "golang.org/x/crypto/acme",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "TrKJW+flz7JulXU3sqnBJjGzgQc=",
+			"origin": "ubox.ubcloud/vendor/golang.org/x/crypto/acme/autocert",
+			"path": "golang.org/x/crypto/acme/autocert",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "VUb+SqeoloAw1A2Jz9IzkDNs06c=",
+			"origin": "ubox.ubcloud/vendor/golang.org/x/sys/unix",
+			"path": "golang.org/x/sys/unix",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "phiS+2onbC5+C2eHi6eNN8tFYpE=",
+			"origin": "ubox.ubcloud/vendor/ubox.golib/crypt",
+			"path": "ubox.golib/crypt",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		},
+		{
+			"checksumSHA1": "UAJ1vRTdompHpvhUBjqrFg9cOUU=",
+			"path": "ubox.ubcloud/common",
+			"revision": "449332df091ef076731b683a12ed6719571cfd42",
+			"revisionTime": "2019-01-18T03:25:42Z"
+		}
+	],
+	"rootPath": "downloader"
+}
