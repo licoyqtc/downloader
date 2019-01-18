@@ -22,7 +22,7 @@ import (
 
 const (
 	default_size   = 1024 * 128 // 128kb
-	default_method = "POST"
+	default_method = "GET"
 )
 
 func download(task *model.DownloadTask, args *http_arg, mode int) (n int64, pack_size int64, e error) {
@@ -47,6 +47,12 @@ func download(task *model.DownloadTask, args *http_arg, mode int) (n int64, pack
 		args = &http_arg{}
 		args.Header["Content-type"] = []string{"application/json"}
 		args.Off_size = default_size
+		args.Method = default_method
+	}
+	if args.Off_size == 0 {
+		args.Off_size = default_size
+	}
+	if args.Method == "" {
 		args.Method = default_method
 	}
 
