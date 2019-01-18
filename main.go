@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"github.com/ubbey/ubox.downloader"
-	"github.com/ubbey/ubox.downloader/model"
-	"time"
+	"github.com/labstack/echo"
 )
 
 type ss struct {
@@ -15,55 +12,14 @@ type ss struct {
 
 func main() {
 
-	tsDo := model.DownloadTask{}
-	tsDo.Business = downloader.BUSINESS_UBOX
-	tsDo.Subbusiness = "demo"
-	tsDo.User = "test"
-	tsDo.Url = "http://iamtest.yqtc.co/searchData/pvr.png"
-	tsDo.Header = ""
-	tsDo.Method = "GET"
-	tsDo.Body = ""
-	tsDo.Dir = "/tmp/packets" // todo 容器内进程运行目录+req.dir
-	tsDo.Name = "get_pvr.png"
+	e := echo.New()
 
-	tsDo.Generateid()
+	e.POST("/uapp/com.pvr.www/greet", func(context echo.Context) error {
+		return context.JSONPretty(200, "hi i am post pvr...", "")
+	})
+	e.GET("/uapp/com.pvr.www/greet", func(context echo.Context) error {
+		return context.JSONPretty(200, "hi i am get pvr...", "")
+	})
 
-	downloader.EnsureDirExist(tsDo.Dir)
-
-	_, err := tsDo.NewDownloadTask()
-	if err != nil {
-		fmt.Println("get fail : ", err.Error())
-	}
-
-	_, err = downloader.GetDownloader().NewTaskWork(tsDo.Taskid)
-	if err != nil {
-		fmt.Println("new task fail : ", err.Error())
-	}
-
-	tsDo = model.DownloadTask{}
-	tsDo.Business = downloader.BUSINESS_UBOX
-	tsDo.Subbusiness = "demo"
-	tsDo.User = "test"
-	tsDo.Url = "http://iamtest.yqtc.co/searchData/pvr.png"
-	tsDo.Header = ""
-	tsDo.Method = "POST"
-	tsDo.Body = ""
-	tsDo.Dir = "/tmp/packets" // todo 容器内进程运行目录+req.dir
-	tsDo.Name = "post_pvr.png"
-
-	tsDo.Generateid()
-
-	downloader.EnsureDirExist(tsDo.Dir)
-
-	_, err = tsDo.NewDownloadTask()
-	if err != nil {
-		fmt.Println("get fail : ", err.Error())
-	}
-
-	_, err = downloader.GetDownloader().NewTaskWork(tsDo.Taskid)
-	if err != nil {
-		fmt.Println("new task fail : ", err.Error())
-	}
-
-	time.Sleep(time.Second * 10)
+	e.Start(":10086")
 }
