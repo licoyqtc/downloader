@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/labstack/echo"
+	"log"
 )
 
 type ss struct {
@@ -21,5 +22,11 @@ func main() {
 		return context.JSONPretty(200, "hi i am get pvr...", "")
 	})
 
-	e.Start(":10086")
+	if true {
+		err := e.Start("unix:///var/run/echo.sock")
+		log.Println("Unreachable code, error:%s", err.Error())
+	} else {
+		err := e.Start(":8087")
+		log.Println("Unreachable code, error:%s", err.Error())
+	}
 }
