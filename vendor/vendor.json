@@ -3,12 +3,6 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "j8QgwNHJYYuHYIja7agSHY6Trtw=",
-			"path": "github.com/labstack/echo",
-			"revision": "83eadbad188df0d05305fce89bfb855a19ef5f21",
-			"revisionTime": "2017-06-24T16:50:07Z"
-		},
-		{
 			"checksumSHA1": "R6DzcBLEP0BONPpsyr+11N7xh5w=",
 			"path": "github.com/labstack/gommon/color",
 			"revision": "1121fd3e243c202482226a7afe4dcd07ffc4139a",
@@ -33,12 +27,6 @@
 			"revisionTime": "2017-03-22T23:44:13Z"
 		},
 		{
-			"checksumSHA1": "cH5Cqgjt6Jv//zNE1v/MOdlbNUw=",
-			"path": "github.com/ubbey/ubox.uappsdk",
-			"revision": "4b5ef5331e0eddbe6631c293a91c6c427a03f4e3",
-			"revisionTime": "2019-01-21T08:14:23Z"
-		},
-		{
 			"checksumSHA1": "LTOa3BADhwvT0wFCknPueQALm8I=",
 			"origin": "github.com/valyala/fasttemplate/vendor/github.com/valyala/bytebufferpool",
 			"path": "github.com/valyala/bytebufferpool",
@@ -50,6 +38,24 @@
 			"path": "github.com/valyala/fasttemplate",
 			"revision": "dcecefd839c4193db0d35b88ec65b4c12d360ab0",
 			"revisionTime": "2017-02-24T21:24:29Z"
+		},
+		{
+			"checksumSHA1": "9BwaY5UYLo1mvQHhiKRY2cLyUmI=",
+			"path": "github.com/yqtc.com/ubox.uapp/uvm/sdk",
+			"revision": "79a9bdba814d3a788c52c37cecc470c3e46601f2",
+			"revisionTime": "2019-01-23T02:52:26Z"
+		},
+		{
+			"checksumSHA1": "HQ61Y4CmHu4mhW8jwLilMnwAwK4=",
+			"path": "github.com/yqtc.com/ubox.uapp/uvm/sdk/echo",
+			"revision": "79a9bdba814d3a788c52c37cecc470c3e46601f2",
+			"revisionTime": "2019-01-23T02:52:26Z"
+		},
+		{
+			"checksumSHA1": "dPKVcTZMe6I6uYV2cdvjGUOHcsk=",
+			"path": "github.com/yqtc.com/ubox.uapp/uvm/sdk/syscall",
+			"revision": "79a9bdba814d3a788c52c37cecc470c3e46601f2",
+			"revisionTime": "2019-01-23T02:52:26Z"
 		},
 		{
 			"checksumSHA1": "W0j4I7QpxXlChjyhAojZmFjU6Bg=",

@@ -9,7 +9,7 @@
 // Author:
 // CreateTime:
 /***********************************************************************/
-package ubox_uappsdk
+package syscall
 
 import (
 	"encoding/json"
@@ -31,6 +31,7 @@ type execrets struct {
 }
 
 func ExecSysFunc(cmd string, args ...interface{}) (ret interface{}, err error) {
+
 	var (
 		errstr = ""
 		data   = []byte{}
@@ -82,6 +83,6 @@ func ExecSysFunc(cmd string, args ...interface{}) (ret interface{}, err error) {
 	}
 
 error:
-	log.Fatalf("%s\n", errstr)
+	log.Printf("%s\n", errstr)
 	return rets.Rets, err
 }

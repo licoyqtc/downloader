@@ -1,0 +1,12 @@
+#####
+#https://echo.labstack.com
+#####
+
+
+###
+files=`grep 'github.com/labstack/echo' -r . |grep -v README | awk -F ':' '{print $1}' | sort -u`
+for f in $files
+do
+    echo $f
+    sed -i "" "s/github.com\/labstack\/echo/yqtc.com\/ubox.uapp\/uvm\/sdk\/echo/g"  $f
+done

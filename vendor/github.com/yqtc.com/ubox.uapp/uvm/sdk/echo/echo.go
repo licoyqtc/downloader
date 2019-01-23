@@ -8,8 +8,8 @@ Example:
   import (
     "net/http"
 
-    "github.com/labstack/echo"
-    "github.com/labstack/echo/middleware"
+    "yqtc.com/ubox.uapp/uvm/sdk/echo"
+    "yqtc.com/ubox.uapp/uvm/sdk/echo/middleware"
   )
 
   // Handler
@@ -39,6 +39,7 @@ package echo
 import (
 	"bytes"
 	"crypto/tls"
+	"strings"
 	"errors"
 	"fmt"
 	"io"
@@ -72,14 +73,15 @@ type (
 		TLSServer        *http.Server
 		Listener         net.Listener
 		TLSListener      net.Listener
+		AutoTLSManager   autocert.Manager
 		DisableHTTP2     bool
 		Debug            bool
 		HideBanner       bool
+		HidePort         bool
 		HTTPErrorHandler HTTPErrorHandler
 		Binder           Binder
 		Validator        Validator
 		Renderer         Renderer
-		AutoTLSManager   autocert.Manager
 		// Mutex            sync.RWMutex
 		Logger Logger
 	}
@@ -95,6 +97,7 @@ type (
 	HTTPError struct {
 		Code    int
 		Message interface{}
+		Inner   error // Stores the error returned by an external dependency
 	}
 
 	// MiddlewareFunc defines a function to process middleware.
@@ -189,6 +192,7 @@ const (
 	HeaderXHTTPMethodOverride = "X-HTTP-Method-Override"
 	HeaderXRealIP             = "X-Real-IP"
 	HeaderXRequestID          = "X-Request-ID"
+	HeaderXRequestedWith      = "X-Requested-With"
 	HeaderServer              = "Server"
 	HeaderOrigin              = "Origin"
 
@@ -212,7 +216,7 @@ const (
 )
 
 const (
-	version = "3.2.1"
+	version = "3.2.6"
 	website = "https://echo.labstack.com"
 	// http://patorjk.com/software/taag/#p=display&f=Small%20Slant&t=Echo
 	banner = `
@@ -249,10 +253,10 @@ var (
 	ErrForbidden                   = NewHTTPError(http.StatusForbidden)
 	ErrMethodNotAllowed            = NewHTTPError(http.StatusMethodNotAllowed)
 	ErrStatusRequestEntityTooLarge = NewHTTPError(http.StatusRequestEntityTooLarge)
-	ErrValidatorNotRegistered      = errors.New("Validator not registered")
-	ErrRendererNotRegistered       = errors.New("Renderer not registered")
-	ErrInvalidRedirectCode         = errors.New("Invalid redirect status code")
-	ErrCookieNotFound              = errors.New("Cookie not found")
+	ErrValidatorNotRegistered      = errors.New("validator not registered")
+	ErrRendererNotRegistered       = errors.New("renderer not registered")
+	ErrInvalidRedirectCode         = errors.New("invalid redirect status code")
+	ErrCookieNotFound              = errors.New("cookie not found")
 )
 
 // Error handlers
@@ -282,7 +286,7 @@ func New() (e *Echo) {
 	e.TLSServer.Handler = e
 	e.HTTPErrorHandler = e.DefaultHTTPErrorHandler
 	e.Binder = &DefaultBinder{}
-	e.Logger.SetLevel(log.OFF)
+	e.Logger.SetLevel(log.ERROR)
 	e.stdLogger = stdLog.New(e.Logger.Output(), e.Logger.Prefix()+": ", 0)
 	e.pool.New = func() interface{} {
 		return e.NewContext(nil, nil)
@@ -319,6 +323,9 @@ func (e *Echo) DefaultHTTPErrorHandler(err error, c Context) {
 	if he, ok := err.(*HTTPError); ok {
 		code = he.Code
 		msg = he.Message
+		if he.Inner != nil {
+			msg = fmt.Sprintf("%v, %v", err, he.Inner)
+		}
 	} else if e.Debug {
 		msg = err.Error()
 	} else {
@@ -328,19 +335,19 @@ func (e *Echo) DefaultHTTPErrorHandler(err error, c Context) {
 		msg = Map{"message": msg}
 	}
 
+	e.Logger.Error(err)
+
+	// Send response
 	if !c.Response().Committed {
 		if c.Request().Method == HEAD { // Issue #608
-			if err := c.NoContent(code); err != nil {
-				goto ERROR
-			}
+			err = c.NoContent(code)
 		} else {
-			if err := c.JSON(code, msg); err != nil {
-				goto ERROR
-			}
+			err = c.JSON(code, msg)
+		}
+		if err != nil {
+			e.Logger.Error(err)
 		}
 	}
-ERROR:
-	e.Logger.Error(err)
 }
 
 // Pre adds middleware to the chain which is run before router.
@@ -356,63 +363,63 @@ func (e *Echo) Use(middleware ...MiddlewareFunc) {
 // CONNECT registers a new CONNECT route for a path with matching handler in the
 // router with optional route-level middleware.
 func (e *Echo) CONNECT(path string, h HandlerFunc, m ...MiddlewareFunc) *Route {
-	return e.add(CONNECT, path, h, m...)
+	return e.Add(CONNECT, path, h, m...)
 }
 
 // DELETE registers a new DELETE route for a path with matching handler in the router
 // with optional route-level middleware.
 func (e *Echo) DELETE(path string, h HandlerFunc, m ...MiddlewareFunc) *Route {
-	return e.add(DELETE, path, h, m...)
+	return e.Add(DELETE, path, h, m...)
 }
 
 // GET registers a new GET route for a path with matching handler in the router
 // with optional route-level middleware.
 func (e *Echo) GET(path string, h HandlerFunc, m ...MiddlewareFunc) *Route {
-	return e.add(GET, path, h, m...)
+	return e.Add(GET, path, h, m...)
 }
 
 // HEAD registers a new HEAD route for a path with matching handler in the
 // router with optional route-level middleware.
 func (e *Echo) HEAD(path string, h HandlerFunc, m ...MiddlewareFunc) *Route {
-	return e.add(HEAD, path, h, m...)
+	return e.Add(HEAD, path, h, m...)
 }
 
 // OPTIONS registers a new OPTIONS route for a path with matching handler in the
 // router with optional route-level middleware.
 func (e *Echo) OPTIONS(path string, h HandlerFunc, m ...MiddlewareFunc) *Route {
-	return e.add(OPTIONS, path, h, m...)
+	return e.Add(OPTIONS, path, h, m...)
 }
 
 // PATCH registers a new PATCH route for a path with matching handler in the
 // router with optional route-level middleware.
 func (e *Echo) PATCH(path string, h HandlerFunc, m ...MiddlewareFunc) *Route {
-	return e.add(PATCH, path, h, m...)
+	return e.Add(PATCH, path, h, m...)
 }
 
 // POST registers a new POST route for a path with matching handler in the
 // router with optional route-level middleware.
 func (e *Echo) POST(path string, h HandlerFunc, m ...MiddlewareFunc) *Route {
-	return e.add(POST, path, h, m...)
+	return e.Add(POST, path, h, m...)
 }
 
 // PUT registers a new PUT route for a path with matching handler in the
 // router with optional route-level middleware.
 func (e *Echo) PUT(path string, h HandlerFunc, m ...MiddlewareFunc) *Route {
-	return e.add(PUT, path, h, m...)
+	return e.Add(PUT, path, h, m...)
 }
 
 // TRACE registers a new TRACE route for a path with matching handler in the
 // router with optional route-level middleware.
 func (e *Echo) TRACE(path string, h HandlerFunc, m ...MiddlewareFunc) *Route {
-	return e.add(TRACE, path, h, m...)
+	return e.Add(TRACE, path, h, m...)
 }
 
 // Any registers a new route for all HTTP methods and path with matching handler
 // in the router with optional route-level middleware.
 func (e *Echo) Any(path string, handler HandlerFunc, middleware ...MiddlewareFunc) []*Route {
-	routes := make([]*Route, 0)
-	for _, m := range methods {
-		routes = append(routes, e.add(m, path, handler, middleware...))
+	routes := make([]*Route, len(methods))
+	for i, m := range methods {
+		routes[i] = e.Add(m, path, handler, middleware...)
 	}
 	return routes
 }
@@ -420,9 +427,9 @@ func (e *Echo) Any(path string, handler HandlerFunc, middleware ...MiddlewareFun
 // Match registers a new route for multiple HTTP methods and path with matching
 // handler in the router with optional route-level middleware.
 func (e *Echo) Match(methods []string, path string, handler HandlerFunc, middleware ...MiddlewareFunc) []*Route {
-	routes := make([]*Route, 0)
-	for _, m := range methods {
-		routes = append(routes, e.add(m, path, handler, middleware...))
+	routes := make([]*Route, len(methods))
+	for i, m := range methods {
+		routes[i] = e.Add(m, path, handler, middleware...)
 	}
 	return routes
 }
@@ -460,7 +467,9 @@ func (e *Echo) File(path, file string) *Route {
 	})
 }
 
-func (e *Echo) add(method, path string, handler HandlerFunc, middleware ...MiddlewareFunc) *Route {
+// Add registers a new route for an HTTP method and path with matching handler
+// in the router with optional route-level middleware.
+func (e *Echo) Add(method, path string, handler HandlerFunc, middleware ...MiddlewareFunc) *Route {
 	name := handlerName(handler)
 	e.router.Add(method, path, func(c Context) error {
 		h := handler
@@ -523,7 +532,7 @@ func (e *Echo) Reverse(name string, params ...interface{}) string {
 
 // Routes returns the registered routes.
 func (e *Echo) Routes() []*Route {
-	routes := []*Route{}
+	routes := make([]*Route, 0, len(e.router.routes))
 	for _, v := range e.router.routes {
 		routes = append(routes, v)
 	}
@@ -556,11 +565,11 @@ func (e *Echo) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Middleware
 	h := func(c Context) error {
 		method := r.Method
-		path := r.URL.RawPath
-		if path == "" {
-			path = r.URL.Path
+		rpath := r.URL.RawPath // Raw path
+		if rpath == "" {
+			rpath = r.URL.Path
 		}
-		e.router.Find(method, path, c)
+		e.router.Find(method, rpath, c)
 		h := c.Handler()
 		for i := len(e.middleware) - 1; i >= 0; i-- {
 			h = e.middleware[i](h)
@@ -602,6 +611,10 @@ func (e *Echo) StartTLS(address string, certFile, keyFile string) (err error) {
 
 // StartAutoTLS starts an HTTPS server using certificates automatically installed from https://letsencrypt.org.
 func (e *Echo) StartAutoTLS(address string) error {
+	if e.Listener == nil {
+		go http.ListenAndServe(":http", e.AutoTLSManager.HTTPHandler(nil))
+	}
+
 	s := e.TLSServer
 	s.TLSConfig = new(tls.Config)
 	s.TLSConfig.GetCertificate = e.AutoTLSManager.GetCertificate
@@ -638,7 +651,7 @@ func (e *Echo) StartServer(s *http.Server) (err error) {
 				return err
 			}
 		}
-		if !e.HideBanner {
+		if !e.HidePort {
 			e.colorer.Printf("⇨ http server started on %s\n", e.colorer.Green(e.Listener.Addr()))
 		}
 		return s.Serve(e.Listener)
@@ -650,7 +663,7 @@ func (e *Echo) StartServer(s *http.Server) (err error) {
 		}
 		e.TLSListener = tls.NewListener(l, s.TLSConfig)
 	}
-	if !e.HideBanner {
+	if !e.HidePort {
 		e.colorer.Printf("⇨ https server started on %s\n", e.colorer.Green(e.TLSListener.Addr()))
 	}
 	return s.Serve(e.TLSListener)
@@ -717,10 +730,17 @@ func (ln tcpKeepAliveListener) Accept() (c net.Conn, err error) {
 	return tc, nil
 }
 
-func newListener(address string) (*tcpKeepAliveListener, error) {
-	l, err := net.Listen("tcp", address)
-	if err != nil {
-		return nil, err
+func newListener(address string) (net.Listener, error) {
+	if strings.Index(address, "unix://") == 0 {
+		var unixAddr *net.UnixAddr
+		unixAddr, _ = net.ResolveUnixAddr("unix", address[7:])
+		unixListener, err := net.ListenUnix("unix", unixAddr)
+		return unixListener, err
+	} else {
+		l, err := net.Listen("tcp", address)
+		if err != nil {
+			return nil, err
+		}
+		return &tcpKeepAliveListener{l.(*net.TCPListener)}, nil
 	}
-	return &tcpKeepAliveListener{l.(*net.TCPListener)}, nil
 }

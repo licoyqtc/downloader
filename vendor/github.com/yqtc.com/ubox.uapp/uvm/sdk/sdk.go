@@ -9,10 +9,12 @@
 // Author: licowei
 // CreateTime: 2019-01-16
 /***********************************************************************/
-package ubox_uappsdk
+package sdk
 
 import (
 	"encoding/json"
+	//	"github.com/yqtc.com/ubox.golib/log"
+	"github.com/yqtc.com/ubox.uapp/uvm/sdk/syscall"
 )
 
 /*
@@ -86,7 +88,7 @@ func Sdk_device_registerUpnp(req Sdk_device_registerUpnp_req) (Sdk_device_regist
 
 	rsp := Sdk_device_registerUpnp_rsp{}
 
-	dret, err := ExecSysFunc(SDK_DEVICE_REGISTER_UPNP, req)
+	dret, err := syscall.ExecSysFunc(SDK_DEVICE_REGISTER_UPNP, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -115,14 +117,20 @@ type Sdk_device_openUpnp_rsp struct {
 			11002 - 开关已打开
 	*/
 	Err_msg string `json:"err_msg"`
-	Delay   int    `json:"delay"`
+	Delay   int64  `json:"delay"`
+}
+
+func (r *Sdk_device_openUpnp_rsp) Result(errno int, errmsg string) {
+	r.Err_no = errno
+	r.Err_msg = errmsg
+	//log.TRACE("SDK OpenUpnpRsp err_no : %d , err_msg : %s", errno, errmsg)
 }
 
 func Sdk_device_openUpnp(req Sdk_device_openUpnp_req) (Sdk_device_openUpnp_rsp, error) {
 
 	rsp := Sdk_device_openUpnp_rsp{}
 
-	dret, err := ExecSysFunc(SDK_DEVICE_OPEN_UPNP, req)
+	dret, err := syscall.ExecSysFunc(SDK_DEVICE_OPEN_UPNP, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -159,7 +167,7 @@ func Sdk_user_getUser(req Sdk_user_getUser_req) (Sdk_user_getUser_rsp, error) {
 
 	rsp := Sdk_user_getUser_rsp{}
 
-	dret, err := ExecSysFunc(SDK_USER_GET_USER, req)
+	dret, err := syscall.ExecSysFunc(SDK_USER_GET_USER, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -198,7 +206,7 @@ func Sdk_samba_config(req Sdk_samba_config_req) (Sdk_samba_config_rsp, error) {
 
 	rsp := Sdk_samba_config_rsp{}
 
-	dret, err := ExecSysFunc(SDK_SAMBA_CONFIG, req)
+	dret, err := syscall.ExecSysFunc(SDK_SAMBA_CONFIG, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -234,7 +242,7 @@ func Sdk_samba_operate(req Sdk_samba_operate_req) (Sdk_samba_operate_rsp, error)
 
 	rsp := Sdk_samba_operate_rsp{}
 
-	dret, err := ExecSysFunc(SDK_SAMBA_OPERATE, req)
+	dret, err := syscall.ExecSysFunc(SDK_SAMBA_OPERATE, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -273,11 +281,17 @@ type Sdk_downloader_task_download_rsp struct {
 	Taskid  string `json:"taskid"`
 }
 
+func (r *Sdk_downloader_task_download_rsp) Result(errno int, errmsg string) {
+	r.Err_no = errno
+	r.Err_msg = errmsg
+	//log.TRACE("SDK DownloadRsp err_no : %d , err_msg : %s", errno, errmsg)
+}
+
 func Sdk_downloader_task_download(req Sdk_downloader_task_download_req) (Sdk_downloader_task_download_rsp, error) {
 
 	rsp := Sdk_downloader_task_download_rsp{}
 
-	dret, err := ExecSysFunc(SDK_DOWNLOADER_DOWNLOAD, req)
+	dret, err := syscall.ExecSysFunc(SDK_DOWNLOADER_DOWNLOAD, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -312,7 +326,7 @@ func Sdk_downloader_change_status(req Sdk_downloader_change_status_req) (Sdk_dow
 
 	rsp := Sdk_downloader_change_status_rsp{}
 
-	dret, err := ExecSysFunc(SDK_DOWNLOADER_CHANGE_STATUS, req)
+	dret, err := syscall.ExecSysFunc(SDK_DOWNLOADER_CHANGE_STATUS, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -352,7 +366,7 @@ func Sdk_downloader_taskinfo(req Sdk_downloader_taskinfo_req) (Sdk_downloader_ta
 
 	rsp := Sdk_downloader_taskinfo_rsp{}
 
-	dret, err := ExecSysFunc(SDK_DOWNLOADER_TASK_INFO, req)
+	dret, err := syscall.ExecSysFunc(SDK_DOWNLOADER_TASK_INFO, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -387,7 +401,7 @@ func Sdk_downloader_delete(req Sdk_downloader_delete_req) (Sdk_downloader_delete
 
 	rsp := Sdk_downloader_delete_rsp{}
 
-	dret, err := ExecSysFunc(SDK_DOWNLOADER_DELETE, req)
+	dret, err := syscall.ExecSysFunc(SDK_DOWNLOADER_DELETE, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -431,7 +445,7 @@ func Sdk_downloader_getlist(req Sdk_downloader_getlist_req) (Sdk_downloader_getl
 
 	rsp := Sdk_downloader_getlist_rsp{}
 
-	dret, err := ExecSysFunc(SDK_DOWNLOADER_GET_LIST, req)
+	dret, err := syscall.ExecSysFunc(SDK_DOWNLOADER_GET_LIST, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -464,7 +478,7 @@ func Sdk_downloader_removeall(req Sdk_downloader_removeall_req) (Sdk_downloader_
 
 	rsp := Sdk_downloader_removeall_rsp{}
 
-	dret, err := ExecSysFunc(SDK_DOWNLOADER_REMOVEALL, req)
+	dret, err := syscall.ExecSysFunc(SDK_DOWNLOADER_REMOVEALL, req)
 	if err != nil {
 		return rsp, err
 	}
@@ -499,7 +513,7 @@ func Sdk_disk_clear_userdata(req Sdk_disk_clear_userdata_req) (Sdk_disk_clear_us
 
 	rsp := Sdk_disk_clear_userdata_rsp{}
 
-	dret, err := ExecSysFunc(SDK_DISK_CLEAR_UERDATA, req)
+	dret, err := syscall.ExecSysFunc(SDK_DISK_CLEAR_UERDATA, req)
 	if err != nil {
 		return rsp, err
 	}
