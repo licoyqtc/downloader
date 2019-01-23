@@ -33,6 +33,12 @@
 			"revisionTime": "2017-03-22T23:44:13Z"
 		},
 		{
+			"checksumSHA1": "cH5Cqgjt6Jv//zNE1v/MOdlbNUw=",
+			"path": "github.com/ubbey/ubox.uappsdk",
+			"revision": "4b5ef5331e0eddbe6631c293a91c6c427a03f4e3",
+			"revisionTime": "2019-01-21T08:14:23Z"
+		},
+		{
 			"checksumSHA1": "LTOa3BADhwvT0wFCknPueQALm8I=",
 			"origin": "github.com/valyala/fasttemplate/vendor/github.com/valyala/bytebufferpool",
 			"path": "github.com/valyala/bytebufferpool",

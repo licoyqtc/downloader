@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/ubbey/ubox.uappsdk"
+	"github.com/yqtc.com/ubox.uapp/uvm/sdk"
+	"github.com/yqtc.com/ubox.uapp/uvm/sdk/echo"
 	"log"
-	"yqtc.com/ubox.uapp/uvm/sdk/echo"
 )
 
 type ss struct {
@@ -25,15 +25,15 @@ func main() {
 	})
 
 	e.POST("/uapp/com.pvr.www/download", func(context echo.Context) error {
-		req := ubox_uappsdk.Sdk_downloader_task_download_req{}
-		req.Business = ubox_uappsdk.UAPP_PVR
+		req := sdk.Sdk_downloader_task_download_req{}
+		req.Business = sdk.UAPP_PVR
 		req.Subbusiness = "test"
 		req.Method = "GET"
 		req.Dir = "/usr/local/application/com.pvr.www/workroot/data"
 		req.Url = "http://iamtest.yqtc.co/Application/com.pvr.www/pvr-1.0.0.xml"
 		req.Packname = "pvr-1.0.0.xml"
 
-		rsp, err := ubox_uappsdk.Sdk_downloader_task_download(req)
+		rsp, err := sdk.Sdk_downloader_task_download(req)
 		if err != nil {
 			log.Println(err.Error())
 			return context.JSONPretty(200, err.Error()+"\n", "")
